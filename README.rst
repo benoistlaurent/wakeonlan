@@ -22,6 +22,8 @@ and the appropriate parameters:
       -c CONFIG, --config CONFIG
                             configuration file (default:
                             '/Users/benoist/.wakeonlan.cfg')
+      --version             show program's version number and exit
+
 
 Credits
 =======

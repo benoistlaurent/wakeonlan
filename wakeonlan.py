@@ -75,6 +75,7 @@ def parse_command_line():
         '-c', '--config', default=default_cfg,
         help="configuration file (default: '{}')".format(default_cfg),
     )
+    parser.add_argument('--version', action='version', version='1.0.0')
     args = parser.parse_args()
     if not os.path.isfile(args.config):
         err = "invalid configuration file: '{}'".format(default_cfg)
