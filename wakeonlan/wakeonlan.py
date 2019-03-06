@@ -5,6 +5,9 @@ import socket
 import struct
 import sys
 
+BROADCAST_IP = '255.255.255.255'
+DEFAULT_PORT = 9
+
 
 def create_magic_packet(macaddress):
     """Create a magic packet.
@@ -56,27 +59,13 @@ def wakeup(config):
     """Wake up machines with parameters described in `config`.
 
     Args:
-        config (configparser.ConfigParser): configuration parser structure
+        config (dict): maps machines name and parameters such as mac address.
     """
-    def check_unrecognized_arguments(cfg, args):
-        for key in cfg:
-            if key not in args:
-                err = "{}: unrecognized parameter '{}'".format(machine.strip(),
-                                                               key)
-                raise ValueError(err)
-
-    def cfg_to_kwargs(cfg):
-        cfg = dict(cfg.items())
-        args = {
-            'macaddress': cfg.pop('mac'),
-            'ip': cfg.pop('broadcast_ip'),
-            'port': int(cfg.pop('default_port')),
-        }
-        check_unrecognized_arguments(cfg, args)
-        return args
-
-    for machine in config.sections():
-        if machine != ' DEFAULT ':
-            kwargs = cfg_to_kwargs(config[machine])
-            print('waking up {}'.format(machine.strip()), file=sys.stderr)
-            send_magic_packet(**kwargs)
+    for machine, params in config.items():
+        do_wakeonline = params.get('wakeonlan', False)
+        if do_wakeonline:
+            print('waking up {}'.format(machine), file=sys.stderr)
+            args = {'macaddress': params['mac'],
+                    'ip': BROADCAST_IP,
+                    'port': DEFAULT_PORT}
+            send_magic_packet(**args)

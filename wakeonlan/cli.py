@@ -6,27 +6,26 @@ import argparse
 import configparser
 import os
 
+import yaml
+
 from wakeonlan import wakeup
 
 
-def get_configuration(configfile):
-    """Return configuration.
-
-    Configuration parameters are initialized to some default values and
-    read from `configfile`.
+def read_yml_config(path):
+    """Read YAML formatted configuration file.
 
     Args:
-        configfile (str): path to configuration file to read
+        path (str): path to configuration file to read
 
     Returns:
-        configparser.ConfigParser: configuration parser structure
+        dict: machines with attributes
 
     """
-    config = configparser.ConfigParser()
-    config['DEFAULT'] = {'BROADCAST_IP': '255.255.255.255',
-                         'DEFAULT_PORT': 9}
-    config.read(configfile)
-    return config
+    with open(path, 'rt') as f:
+        data = yaml.load(f.read())
+    # Machines are entries with a 'mac' attribute
+    data = {machine: desc for machine, desc in data.items() if 'mac' in desc}
+    return data
 
 
 def parse_command_line():
@@ -44,9 +43,8 @@ def parse_command_line():
     """
     default_cfg = os.path.join(os.environ['HOME'], '.wakeonlan.cfg')
     parser = argparse.ArgumentParser(description=__doc__)
-    cfg_arg = parser.add_argument(
-        '-c', '--config', default=default_cfg,
-        help="configuration file (default: '{}')".format(default_cfg),
+    cfg_arg = parser.add_argument('config', 
+        help="YAML configuration file".format(default_cfg),
     )
     parser.add_argument('--version', action='version', version='1.0.0')
     args = parser.parse_args()
@@ -57,9 +55,11 @@ def parse_command_line():
 
 
 def main():
+    cfg = read_yml_config('/Users/benoist/Documents/machines.yml')
+
     """Run wakeonlan as a CLI application."""
     args = parse_command_line()
-    config = get_configuration(args.config)
+    config = read_yml_config(args.config)
     wakeup(config)
 
 
