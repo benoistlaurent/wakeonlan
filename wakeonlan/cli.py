@@ -8,7 +8,7 @@ import os
 
 import yaml
 
-from wakeonlan import wakeup
+import wakeonlan
 
 
 def read_yml_config(path):
@@ -46,7 +46,8 @@ def parse_command_line():
     cfg_arg = parser.add_argument('config', 
         help="YAML configuration file".format(default_cfg),
     )
-    parser.add_argument('--version', action='version', version='1.0.0')
+    parser.add_argument('--version', action='version',
+                        version=wakeonlan.__version__)
     args = parser.parse_args()
     if not os.path.isfile(args.config):
         err = "invalid configuration file: '{}'".format(default_cfg)
@@ -60,7 +61,7 @@ def main():
     """Run wakeonlan as a CLI application."""
     args = parse_command_line()
     config = read_yml_config(args.config)
-    wakeup(config)
+    wakeonlan.wakeup(config)
 
 
 if __name__ == '__main__':
