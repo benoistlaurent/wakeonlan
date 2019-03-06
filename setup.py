@@ -18,7 +18,7 @@ setup(
     description='A tool to wake machine from LAN',
     long_description=readme + '\n\n' + history,
     url='https://github.com/benoistlaurent/wakeonlan',
-    version='1.0.0',
+    version='1.1.0',
     install_requires=requirements,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
