@@ -20,7 +20,6 @@ def create_magic_packet(macaddress):
 
     Returns:
         str: magic packet
-
     """
     if len(macaddress) == 17:
         sep = macaddress[2]
@@ -45,7 +44,6 @@ def send_magic_packet(macaddress, ip, port):
         macaddress (str): mac address of the computer to wake up
         ip (str): host ip address
         port (int): host port
-
     """
     packet = create_magic_packet(macaddress)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

@@ -3,7 +3,6 @@
 
 
 import argparse
-import configparser
 import os
 
 import yaml
@@ -43,7 +42,8 @@ def parse_command_line():
     """
     default_cfg = os.path.join(os.environ['HOME'], '.wakeonlan.cfg')
     parser = argparse.ArgumentParser(description=__doc__)
-    cfg_arg = parser.add_argument('config', 
+    cfg_arg = parser.add_argument(
+        'config',
         help="YAML configuration file".format(default_cfg),
     )
     parser.add_argument('--version', action='version',
@@ -56,8 +56,6 @@ def parse_command_line():
 
 
 def main():
-    cfg = read_yml_config('/Users/benoist/Documents/machines.yml')
-
     """Run wakeonlan as a CLI application."""
     args = parse_command_line()
     config = read_yml_config(args.config)
