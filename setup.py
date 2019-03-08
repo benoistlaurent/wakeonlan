@@ -9,7 +9,7 @@ with open('README.rst', 'rt') as f:
 with open('HISTORY.rst', 'rt') as f:
     history = f.read()
 
-requirements = []
+requirements = ['PyYAML>=3.13']
 
 setup(
     author='Benoist LAURENT',

@@ -21,7 +21,7 @@ def read_yml_config(path):
 
     """
     with open(path, 'rt') as f:
-        data = yaml.load(f.read())
+        data = yaml.load(f.read(), Loader=yaml.Loader)
     # Machines are entries with a 'mac' attribute
     data = {machine: desc for machine, desc in data.items() if 'mac' in desc}
     return data
@@ -40,17 +40,15 @@ def parse_command_line():
         argparse.ArgumentError: if configuration file does not exists
 
     """
-    default_cfg = os.path.join(os.environ['HOME'], '.wakeonlan.cfg')
     parser = argparse.ArgumentParser(description=__doc__)
-    cfg_arg = parser.add_argument(
-        'config',
-        help="YAML configuration file".format(default_cfg),
-    )
+    cfg_arg = parser.add_argument('config', help="YAML configuration file")
+    parser.add_argument('machine', nargs='*', help='machines to reboot',
+                        default=['all'])
     parser.add_argument('--version', action='version',
                         version=wakeonlan.__version__)
     args = parser.parse_args()
     if not os.path.isfile(args.config):
-        err = "invalid configuration file: '{}'".format(default_cfg)
+        err = "invalid configuration file: '{}'".format(args.config)
         raise argparse.ArgumentError(cfg_arg, err)
     return args
 
@@ -59,7 +57,7 @@ def main():
     """Run wakeonlan as a CLI application."""
     args = parse_command_line()
     config = read_yml_config(args.config)
-    wakeonlan.wakeup(config)
+    wakeonlan.wakeup(config, args.machine)
 
 
 if __name__ == '__main__':

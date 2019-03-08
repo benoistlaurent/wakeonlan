@@ -53,14 +53,27 @@ def send_magic_packet(macaddress, ip, port):
     sock.close()
 
 
-def wakeup(config):
+def get_valid_machine_names(machine, config):
+    if machine == ['all']:
+        machine = [name for name in config]
+    else:
+        for name in machine:
+            if name not in config:
+                raise ValueError("Invalid machine name: '{}'".format(name))
+    return machine
+
+
+def wakeup(config, machines=['all']):
     """Wake up machines with parameters described in `config`.
 
     Args:
         config (dict): maps machines name and parameters such as mac address.
+        machines (list[str]): machine names of machine to wake-up
     """
+    machines = get_valid_machine_names(machines, config)
+
     for machine, params in config.items():
-        do_wakeonline = params.get('wakeonlan', False)
+        do_wakeonline = machine in machines and params.get('wakeonlan', False)
         if do_wakeonline:
             print('waking up {}'.format(machine), file=sys.stderr)
             args = {'macaddress': params['mac'],
